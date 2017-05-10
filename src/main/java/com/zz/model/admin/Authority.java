@@ -20,7 +20,7 @@ public class Authority implements Serializable{
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany
+    @ManyToOne
     private Role roles;
 
     public Long getId() {

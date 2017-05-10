@@ -1,7 +1,7 @@
 package com.zz.service;
 
 import com.zz.model.SysUser;
-import com.zz.repository.SysUserRepository;
+import com.zz.dao.SysUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

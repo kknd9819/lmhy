@@ -3,6 +3,7 @@ package com.zz.model.admin;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by X-man on 2017/5/10.
@@ -45,14 +46,14 @@ public class Role implements Serializable{
     @OneToOne
     private Admin admin;
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.REFRESH)
-    private Authority authorities;
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.REFRESH)
+    private List<Authority> authorities;
 
-    public Authority getAuthorities() {
+    public List<Authority> getAuthorities() {
         return authorities;
     }
 
-    public void setAuthorities(Authority authorities) {
+    public void setAuthorities(List<Authority> authorities) {
         this.authorities = authorities;
     }
 
