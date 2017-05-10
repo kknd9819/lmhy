@@ -10,10 +10,14 @@ import com.zz.model.basic.Page;
 import com.zz.model.basic.Pageable;
 import com.zz.service.admin.AdminService;
 import com.zz.util.shengyuan.StringUtil;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.persistence.criteria.Predicate;
 import java.util.*;
+
+import static antlr.build.ANTLR.root;
 
 /**
  * 后台管理员服务层实现
@@ -88,7 +92,11 @@ public class AdminServiceImpl implements AdminService {
 		if (!StringUtil.isEmpty(pageable.getSearchValue())) {
 			paramMap.put(pageable.getSearchProperty(), pageable.getSearchValue());
 		}
-		return adminDao.findAll();
+		return adminDao.findAll(new PageRequest(pageSize,pageNo),(root,query,cb) -> {
+			// 查询条件
+			List<Predicate> predicates = new ArrayList<>();
+
+		},pageable);
 	}
 
 }
