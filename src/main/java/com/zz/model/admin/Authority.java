@@ -21,7 +21,7 @@ public class Authority implements Serializable{
     private String name;
 
     @ManyToOne
-    private Role roles;
+    private Role role;
 
     public Long getId() {
         return id;
@@ -39,11 +39,11 @@ public class Authority implements Serializable{
         this.name = name;
     }
 
-    public Role getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(Role roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
