@@ -5,14 +5,12 @@ import com.zz.dao.admin.AdminDao;
 import com.zz.model.admin.Admin;
 import com.zz.model.admin.Authority;
 import com.zz.model.admin.Role;
-import com.zz.model.admin.vo.AdminRoleAuthority;
 import com.zz.model.basic.Page;
 import com.zz.model.basic.Pageable;
 import com.zz.service.admin.AdminService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.security.auth.Subject;
 import java.util.*;
 
 /**
