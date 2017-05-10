@@ -1,12 +1,11 @@
 package com.zz.controller.system;
 
-import cn.shengyuan.basic.model.Message;
-import cn.shengyuan.basic.model.Page;
 import cn.shengyuan.yun.admin.system.service.AdminService;
 import cn.shengyuan.yun.admin.system.service.RoleService;
-import cn.shengyuan.yun.admin.web.Pageable;
-import cn.shengyuan.yun.admin.web.controller.BaseController;
-import cn.shengyuan.yun.core.admin.entity.Admin;
+import com.zz.controller.BaseController;
+import com.zz.model.admin.Admin;
+import com.zz.model.basic.Page;
+import com.zz.model.basic.Pageable;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
