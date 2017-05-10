@@ -36,23 +36,18 @@ public interface AdminService {
 	/**
 	 * 新增后台管理员
 	 * @param admin 后台管理员实体
-	 * @param roleIds 角色主键数组
+	 * @param roleId 角色主键数组
 	 * @return Long 保存实体的主键
 	 */
-	 Long saveAdmin(Admin admin, Long[] roleIds);
+	 Long saveAdmin(Admin admin, Long roleId);
 
 	/**
 	 * 新增后台管理员
 	 * @param admin 后台管理员实体
-	 * @param roleIds 角色主键数组
+	 * @param roleId 角色主键数组
 	 */
-	 void updateAdmin(Admin admin, Long[] roleIds);
-	
-	/**
-	 * 批量删除管理员
-	 * @param admins
-	 */
-	 void batchDelete(List<Admin> admins);
+	 void updateAdmin(Admin admin, Long roleId);
+
 	
 	/**
 	 * 分页查找所有的后台管理员

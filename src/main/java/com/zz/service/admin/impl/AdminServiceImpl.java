@@ -2,12 +2,14 @@ package com.zz.service.admin.impl;
 
 
 import com.zz.dao.admin.AdminDao;
+import com.zz.dao.admin.RoleDao;
 import com.zz.model.admin.Admin;
 import com.zz.model.admin.Authority;
 import com.zz.model.admin.Role;
 import com.zz.model.basic.Page;
 import com.zz.model.basic.Pageable;
 import com.zz.service.admin.AdminService;
+import com.zz.util.shengyuan.StringUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,6 +27,8 @@ public class AdminServiceImpl implements AdminService {
 	@Resource(name = "adminDao")
 	private AdminDao adminDao;
 
+	@Resource(name = "roleDao")
+	private RoleDao roleDao;
 	
 	@Override
 	public boolean usernameExists(String username) {
@@ -55,47 +59,26 @@ public class AdminServiceImpl implements AdminService {
 
 
 	@Override
-	public Long saveAdmin(Admin admin, Long[] roleIds) {
+	public Long saveAdmin(Admin admin, Long roleId) {
 		admin.setCreateDate(new Date());
 		admin.setModifyDate(new Date());
-		Long adminId = adminDao.save(admin);
-		List<AdminRole> adminRoles = new ArrayList<AdminRole>();
-		for (Long roleId : roleIds) {
-			AdminRole adminRole = new AdminRole();
-			adminRole.setAdminId(adminId);
-			adminRole.setRoleId(roleId);
-			adminRoles.add(adminRole);
-		}
-		adminRoleDao.batchSaveAdminRole(adminRoles);
-		return adminId;
+		Role role = roleDao.findOne(roleId);
+		admin.setRole(role);
+		Admin save = adminDao.save(admin);
+		return save.getId();
 	}
 
 	@Override
-	public void updateAdmin(Admin admin, Long[] roleIds) {
+	public void updateAdmin(Admin admin, Long roleId) {
 		admin.setModifyDate(new Date());
-		adminDao.update(admin);
-		if (roleIds != null) {
-			adminRoleDao.deleteByAdminId(admin.getId());
-			List<AdminRole> adminRoles = new ArrayList<AdminRole>();
-			for (Long roleId : roleIds) {
-				AdminRole adminRole = new AdminRole();
-				adminRole.setAdminId(admin.getId());
-				adminRole.setRoleId(roleId);
-				adminRoles.add(adminRole);
-			}
-			adminRoleDao.batchSaveAdminRole(adminRoles);
+		Role role = roleDao.findOne(roleId);
+		if(role != null){
+			admin.setRole(role);
 		}
+		adminDao.saveAndFlush(admin);
+
 	}
 
-	@Override
-	public void batchDelete(List<Admin> admins) {
-		adminDao.batchDelete(admins);
-	}
-
-	@Override
-	public Page<Admin> findPage(Pageable pageable) {
-		return null;
-	}
 
 	@Override
 	public Page<Admin> findPage(Pageable pageable) {
@@ -105,7 +88,7 @@ public class AdminServiceImpl implements AdminService {
 		if (!StringUtil.isEmpty(pageable.getSearchValue())) {
 			paramMap.put(pageable.getSearchProperty(), pageable.getSearchValue());
 		}
-		return adminDao.queryForPage(pageSize, pageNo, paramMap);
+		return adminDao.findAll();
 	}
 
 }
