@@ -6,14 +6,15 @@ import com.zz.dao.admin.RoleDao;
 import com.zz.model.admin.Admin;
 import com.zz.model.admin.Authority;
 import com.zz.model.admin.Role;
-import com.zz.model.basic.Page;
 import com.zz.model.basic.Pageable;
 import com.zz.service.admin.AdminService;
 import com.zz.util.shengyuan.StringUtil;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.Predicate;
 import java.util.*;
 
@@ -33,7 +34,7 @@ public class AdminServiceImpl implements AdminService {
 
 	@Resource(name = "roleDao")
 	private RoleDao roleDao;
-	
+
 	@Override
 	public boolean usernameExists(String username) {
 		List<Admin> list = adminDao.findByUsername(username);
@@ -88,15 +89,22 @@ public class AdminServiceImpl implements AdminService {
 	public Page<Admin> findPage(Pageable pageable) {
 		int pageSize = pageable.getPageSize();
 		int pageNo = pageable.getPageNumber();
+		PageRequest pageRequest = new PageRequest(pageNo,pageSize);
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		if (!StringUtil.isEmpty(pageable.getSearchValue())) {
 			paramMap.put(pageable.getSearchProperty(), pageable.getSearchValue());
 		}
-		return adminDao.findAll(new PageRequest(pageSize,pageNo),(root,query,cb) -> {
-			// 查询条件
-			List<Predicate> predicates = new ArrayList<>();
 
-		},pageable);
+		return adminDao.findAll((root, query, cb) -> {
+
+			List<Predicate> predicates = new ArrayList<>();
+			if (StringUtil.isNotBlank(pageable.getSearchProperty())) {
+				predicates.add(cb.like(root.get(pageable.getSearchProperty()).as(String.class), "%" + pageable.getSearchValue() + "%"));
+			}
+			query.where(predicates.toArray(new Predicate[predicates.size()]));
+			return null;
+		}, pageRequest);
+
 	}
 
 }

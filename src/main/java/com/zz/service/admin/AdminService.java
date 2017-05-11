@@ -3,8 +3,8 @@ package com.zz.service.admin;
 
 
 import com.zz.model.admin.Admin;
-import com.zz.model.basic.Page;
 import com.zz.model.basic.Pageable;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
