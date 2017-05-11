@@ -14,11 +14,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.persistence.EntityManager;
 import javax.persistence.criteria.Predicate;
-import java.util.*;
-
-import static antlr.build.ANTLR.root;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 后台管理员服务层实现

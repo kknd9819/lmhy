@@ -1,7 +1,7 @@
 package com.zz.service.admin.impl;
 
-import cn.shengyuan.yun.admin.system.service.CaptchaService;
-import cn.shengyuan.yun.admin.web.Setting.CaptchaType;
+import com.zz.service.admin.CaptchaService;
+import com.zz.util.shengyuan.Setting.CaptchaType;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
