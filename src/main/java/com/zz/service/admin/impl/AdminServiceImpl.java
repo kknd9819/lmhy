@@ -90,15 +90,10 @@ public class AdminServiceImpl implements AdminService {
 		int pageSize = pageable.getPageSize();
 		int pageNo = pageable.getPageNumber();
 		PageRequest pageRequest = new PageRequest(pageNo,pageSize);
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		if (!StringUtil.isEmpty(pageable.getSearchValue())) {
-			paramMap.put(pageable.getSearchProperty(), pageable.getSearchValue());
-		}
-
 		return adminDao.findAll((root, query, cb) -> {
 
 			List<Predicate> predicates = new ArrayList<>();
-			if (StringUtil.isNotBlank(pageable.getSearchProperty())) {
+			if (StringUtil.isNotBlank(pageable.getSearchProperty()) && StringUtil.isNotBlank(pageable.getSearchValue())) {
 				predicates.add(cb.like(root.get(pageable.getSearchProperty()).as(String.class), "%" + pageable.getSearchValue() + "%"));
 			}
 			query.where(predicates.toArray(new Predicate[predicates.size()]));
