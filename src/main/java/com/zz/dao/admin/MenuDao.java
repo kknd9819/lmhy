@@ -6,6 +6,7 @@ import com.zz.model.admin.Menu;
 import com.zz.model.admin.vo.MenuMenuValue;
 import com.zz.model.basic.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public interface MenuDao extends JpaRepository<Menu,Long> {
 	 * 查找顶级菜单
 	 * @return 顶级菜单
 	 */
+	 @Query("select m from Menu m where m.parent is null order by orders")
 	 List<Menu> findRoots();
 	
 	/**
@@ -29,6 +31,7 @@ public interface MenuDao extends JpaRepository<Menu,Long> {
 	 * @param pageSize 页记录数
 	 * @return 分页对象
 	 */
+	 @Query("")
 	 Page<MenuMenuValue> findRootsForPage(int pageNo, int pageSize);
 	
 	/**

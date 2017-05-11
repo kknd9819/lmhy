@@ -1,13 +1,12 @@
 package com.zz.service.admin.impl;
 
-import cn.shengyuan.basic.model.Page;
-import cn.shengyuan.basic.service.impl.BaseServiceImpl;
-import cn.shengyuan.tools.util.JsonUtils;
-import cn.shengyuan.yun.admin.system.service.MenuService;
-import cn.shengyuan.yun.admin.web.Pageable;
-import cn.shengyuan.yun.core.admin.dao.MenuDao;
-import cn.shengyuan.yun.core.admin.entity.Menu;
-import cn.shengyuan.yun.core.admin.vo.MenuMenuValue;
+
+import com.zz.dao.admin.MenuDao;
+import com.zz.model.admin.Menu;
+import com.zz.model.basic.Pageable;
+import com.zz.service.admin.MenuService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -21,15 +20,11 @@ import java.util.*;
  * @version 1.0
  */
 @Service("menuServiceImpl")
-public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements MenuService {
+public class MenuServiceImpl implements MenuService {
 	
-	@Resource(name = "menuDaoImpl")
+	@Resource
 	private MenuDao menuDao;
 
-	@Resource(name = "menuDaoImpl")
-	public void setMenuDao(MenuDao menuDao) {
-		super.setDao(menuDao);
-	}
 
 	@Override
 	public List<Menu> findRoots() {
@@ -38,16 +33,15 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 	}
 
 	@Override
-	public Page<MenuMenuValue> findRootsForPage(Pageable pageable) {
+	public Page<Menu> findRootsForPage(Pageable pageable) {
 		int pageSize = pageable.getPageSize();
 		int pageNo = pageable.getPageNumber();
-		return menuDao.findRootsForPage(pageNo, pageSize);
+		return menuDao.findAll(new PageRequest(pageNo, pageSize));
 	}
 
 	@Override
-	public List<MenuMenuValue> findChildren(Long parentId) {
-		
-		return menuDao.findChildren(parentId);
+	public List<Menu> findChildren(Long parentId) {
+
 	}
 
 	@Override
@@ -57,16 +51,17 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 	
 	@Override
 	public Long saveMenu(Menu menu) {
-		Assert.notNull(menu);
+		Assert.notNull(menu,"menu不能为NULL");
 		setValue(menu);
 		menu.setCreateDate(new Date());
 		menu.setModifyDate(new Date());
-		return menuDao.save(menu);
+		Menu save = menuDao.save(menu);
+		return save.getId();
 	}
 
 	@Override
 	public int updateMenu(Menu menu) {
-		Assert.notNull(menu);
+		Assert.notNull(menu,"menu不能为NULL");
 		setValue(menu);
 		List<Menu> children = menuDao.findChildrenMenu(menu.getId());
 		for (Menu child : children) {

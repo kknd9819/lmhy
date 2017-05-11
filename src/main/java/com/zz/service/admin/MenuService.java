@@ -3,9 +3,8 @@ package com.zz.service.admin;
 
 
 import com.zz.model.admin.Menu;
-import com.zz.model.admin.vo.MenuMenuValue;
-import com.zz.model.basic.Page;
 import com.zz.model.basic.Pageable;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -27,14 +26,14 @@ public interface MenuService {
 	 * @param pageable
 	 * @return 分页对象
 	 */
-	public Page<MenuMenuValue> findRootsForPage(Pageable pageable);
+	public Page<Menu> findRootsForPage(Pageable pageable);
 	
 	/**
 	 * 查找下级菜单菜单权限值关联关系
 	 * @param parentId 上级菜单ID
 	 * @return List<MenuMenuValue> 下级菜单菜单权限值关联关系
 	 */
-	public List<MenuMenuValue> findChildren(Long parentId);
+	public List<Menu> findChildren(Long parentId);
 	
 	/**
 	 * 查找下级菜单
