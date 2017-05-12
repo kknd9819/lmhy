@@ -4,6 +4,7 @@ package com.zz.dao.admin;
 
 import com.zz.model.admin.MenuValue;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -17,11 +18,11 @@ public interface MenuValueDao extends JpaRepository<MenuValue,Long> {
 	
 	/**
 	 * 根据菜单值的名称查找菜单值
-	 * @param id 菜单权限主键
 	 * @param vName 菜单权限值(忽略大小写)
 	 * @return 名称是否存在
 	 */
-	 List<MenuValue> nameExists(Long id, String vName);
+	 @Query("select mv from MenuValue mv where mv.vName = ?1")
+	 List<MenuValue> nameExists( String vName);
 	
 	/**
 	 * 批量删除

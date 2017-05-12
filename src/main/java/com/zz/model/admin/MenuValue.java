@@ -31,8 +31,14 @@ public class MenuValue implements Serializable{
     @OneToOne(fetch = FetchType.EAGER,cascade = {CascadeType.REFRESH})
     private Authority authority;
 
+    private String vName;
+
     @OneToOne
     private Menu menu;
+
+    public String getvName() {
+        return authority.getName();
+    }
 
     public Menu getMenu() {
         return menu;

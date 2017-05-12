@@ -1,10 +1,11 @@
 package com.zz.service.admin.impl;
 
-import cn.shengyuan.basic.model.Page;
-import cn.shengyuan.basic.service.impl.BaseServiceImpl;
-import cn.shengyuan.yun.admin.system.service.MenuValueService;
-import cn.shengyuan.yun.core.admin.dao.MenuValueDao;
-import cn.shengyuan.yun.core.admin.entity.MenuValue;
+
+import com.zz.dao.admin.MenuValueDao;
+import com.zz.model.admin.MenuValue;
+import com.zz.service.admin.MenuValueService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,32 +20,28 @@ import java.util.Map;
  * @version 1.0
  */
 @Service("menuValueServiceImpl")
-public class MenuValueServiceImpl extends BaseServiceImpl<MenuValue, Long> implements MenuValueService {
+public class MenuValueServiceImpl implements MenuValueService {
 	
-	@Resource(name = "menuValueDaoImpl")
+	@Resource
 	private MenuValueDao menuValueDao;
-	
-	@Resource(name = "menuValueDaoImpl")
-	public void setMenuValueDao(MenuValueDao menuValueDao) {
-		super.setDao(menuValueDao);
-	}
 
 	@Override
-	public boolean nameExists(Long id, String vName) {
+	public boolean nameExists( String vName) {
 		
-		List<MenuValue> list = menuValueDao.nameExists(id, vName);
+		List<MenuValue> list = menuValueDao.nameExists( vName);
 		return list != null && list.size() > 0;
 	}
 
 	@Override
 	public Page<MenuValue> findPage(int pageNo, int pageSize) {
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		return menuValueDao.queryForPage(pageSize, pageNo, paramMap);
+		PageRequest pageRequest = new PageRequest(pageNo,pageSize);
+		return menuValueDao.findAll(pageRequest);
 	}
 
 	@Override
 	public void batchDelete(List<MenuValue> menuValues) {
-		menuValueDao.batchDelete(menuValues);
+		menuValueDao.delete(menuValues);
 	}
+
 	
 }

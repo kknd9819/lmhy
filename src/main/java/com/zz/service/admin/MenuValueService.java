@@ -3,7 +3,7 @@ package com.zz.service.admin;
 
 
 import com.zz.model.admin.MenuValue;
-import com.zz.model.basic.Page;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -17,11 +17,10 @@ public interface MenuValueService  {
 	
 	/**
 	 * 判断菜单权限值名称是否存在
-	 * @param id 菜单权限主键
 	 * @param vName 菜单权限值(忽略大小写)
 	 * @return 名称是否存在
 	 */
-	boolean nameExists(Long id, String vName);
+	boolean nameExists( String vName);
 	
 	/**
 	 * 分页查找所有的菜单权限值
@@ -29,11 +28,11 @@ public interface MenuValueService  {
 	 * @param pageSize
 	 * @return
 	 */
-	public Page<MenuValue> findPage(int pageNo, int pageSize);
+	 Page<MenuValue> findPage(int pageNo, int pageSize);
 	
 	/**
 	 * 批量删除菜单权限值
 	 * @param menuValues
 	 */
-	public void batchDelete(List<MenuValue> menuValues);
+	 void batchDelete(List<MenuValue> menuValues);
 }
