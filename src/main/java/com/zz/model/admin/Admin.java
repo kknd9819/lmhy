@@ -4,6 +4,7 @@ package com.zz.model.admin;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by X-man on 2017/5/10.
@@ -70,8 +71,8 @@ public class Admin implements Serializable{
     /** 最后登录IP */
     private String loginIp;
 
-    @OneToOne
-    private Role role;
+    @ManyToMany(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
+    private List<Role> role;
 
     public Long getId() {
         return id;
@@ -185,11 +186,11 @@ public class Admin implements Serializable{
         this.loginIp = loginIp;
     }
 
-    public Role getRole() {
+    public List<Role> getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(List<Role> role) {
         this.role = role;
     }
 }

@@ -41,7 +41,7 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	public List<Menu> findChildren(Long parentId) {
-
+		return menuDao.findChildren(parentId);
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class MenuServiceImpl implements MenuService {
 	/**
 	 * 设置值
 	 * 
-	 * @param Menu 角色菜单
+	 * @param menu 角色菜单
 	 */
 	private void setValue(Menu menu) {
 		if (menu == null) {
@@ -85,7 +85,7 @@ public class MenuServiceImpl implements MenuService {
 		}
 		Long parentId = menu.getParent();
 		if (parentId != null) {
-			Menu parent = menuDao.get(parentId);
+			Menu parent = menuDao.getOne(parentId);
 			menu.setFullName(parent.getFullName() + menu.getName());
 			menu.setTreePath(parent.getTreePath() + parentId + Menu.TREE_PATH_SEPARATOR);
 		} else {
@@ -102,7 +102,7 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	public String generateTree(Long roleId) {
-		List<MenuMenuValue> menuMenuValues = menuDao.getAllMenuMenuValue();
+		List<Menu> menuMenuValues = menuDao.getAllMenuMenuValue();
 		List<Menu> menus = menuDao.findMenuByRoleId(roleId);
 		Set<Long> hasMenus = new HashSet<Long>();
 		if (menus != null) {

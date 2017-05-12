@@ -6,6 +6,8 @@ import com.zz.model.basic.Page;
 import com.zz.model.basic.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -22,7 +24,9 @@ public interface AdminDao extends JpaRepository<Admin, Long>,JpaSpecificationExe
 	 * @param username 用户名(忽略大小写)
 	 * @return List<Admin>
 	 */
-	 List<Admin> findByUsername(String username);
+	 @Query(value = "select a from Admin a where a.username = ?1")
+	 List<Admin> findByUsername( String username);
+
 
 
 }

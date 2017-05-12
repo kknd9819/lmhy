@@ -1,8 +1,12 @@
 package com.zz.model.admin;
 
+import org.apache.commons.lang.StringUtils;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by X-man on 2017/5/10.
@@ -13,6 +17,9 @@ public class Menu implements Serializable {
 
 
     private static final long serialVersionUID = 299544619736055006L;
+
+    /** 树路径分隔符 */
+    public static final String TREE_PATH_SEPARATOR = ",";
 
     @Id
     @GeneratedValue
@@ -39,8 +46,6 @@ public class Menu implements Serializable {
     /** 树路径 */
     private String treePath;
 
-    /**权限值ID*/
-    private Long menuValue;
 
     /** 层级 */
     private Integer grade;
@@ -50,6 +55,18 @@ public class Menu implements Serializable {
 
     /** 排序 */
     private Integer orders;
+
+    /** 菜单值 */
+    @OneToOne(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
+    private MenuValue menuValue;
+
+    public MenuValue getMenuValue() {
+        return menuValue;
+    }
+
+    public void setMenuValue(MenuValue menuValue) {
+        this.menuValue = menuValue;
+    }
 
     public Long getId() {
         return id;
@@ -99,14 +116,6 @@ public class Menu implements Serializable {
         this.treePath = treePath;
     }
 
-    public Long getMenuValue() {
-        return menuValue;
-    }
-
-    public void setMenuValue(Long menuValue) {
-        this.menuValue = menuValue;
-    }
-
     public Integer getGrade() {
         return grade;
     }
@@ -129,5 +138,20 @@ public class Menu implements Serializable {
 
     public void setOrders(Integer orders) {
         this.orders = orders;
+    }
+
+    /**
+     * 获取树路径
+     * @return 树路径
+     */
+    public List<Long> getTreePaths() {
+        List<Long> treePaths = new ArrayList<Long>();
+        String[] ids = StringUtils.split(getTreePath(), TREE_PATH_SEPARATOR);
+        if (ids != null) {
+            for (String id : ids) {
+                treePaths.add(Long.valueOf(id));
+            }
+        }
+        return treePaths;
     }
 }

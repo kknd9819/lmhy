@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -53,10 +54,13 @@ public class AdminServiceImpl implements AdminService {
 	public List<String> findAuthorities(Long id) {
 		Admin admin  = adminDao.findOne(id);
 		List<String> authorities = new ArrayList<String>();
-		Role role = admin.getRole();
-		List<Authority> list = role.getAuthorities();
-		for (Authority authority:list) {
-			authorities.add(authority.getName());
+		List<Role> roles = admin.getRole();
+		for(Role role : roles){
+			List<Authority> authorities1 = role.getAuthorities();
+			for(Authority authority : authorities1){
+				String authorityName = authority.getName();
+				authorities.add(authorityName);
+			}
 		}
 		return authorities;
 	}
@@ -67,7 +71,9 @@ public class AdminServiceImpl implements AdminService {
 		admin.setCreateDate(new Date());
 		admin.setModifyDate(new Date());
 		Role role = roleDao.findOne(roleId);
-		admin.setRole(role);
+		List<Role> list = new ArrayList<>(1);
+		list.add(role);
+		admin.setRole(list);
 		Admin save = adminDao.save(admin);
 		return save.getId();
 	}
@@ -76,8 +82,10 @@ public class AdminServiceImpl implements AdminService {
 	public void updateAdmin(Admin admin, Long roleId) {
 		admin.setModifyDate(new Date());
 		Role role = roleDao.findOne(roleId);
+		List<Role> list = new ArrayList<>(1);
+		list.add(role);
 		if(role != null){
-			admin.setRole(role);
+			admin.setRole(list);
 		}
 		adminDao.saveAndFlush(admin);
 

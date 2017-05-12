@@ -43,8 +43,8 @@ public class Role implements Serializable{
     /** 描述 */
     private String description;
 
-    @OneToOne
-    private Admin admin;
+    @ManyToMany(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
+    private List<Admin> admins;
 
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.REFRESH)
     private List<Authority> authorities;
@@ -113,11 +113,11 @@ public class Role implements Serializable{
         this.description = description;
     }
 
-    public Admin getAdmin() {
-        return admin;
+    public List<Admin> getAdmins() {
+        return admins;
     }
 
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
+    public void setAdmins(List<Admin> admins) {
+        this.admins = admins;
     }
 }

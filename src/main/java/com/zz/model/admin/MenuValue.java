@@ -28,9 +28,27 @@ public class MenuValue implements Serializable{
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifyDate;
 
-    /** 菜单权限值 */
-    @Column(nullable = false)
-    private String vName;
+    @OneToOne(fetch = FetchType.EAGER,cascade = {CascadeType.REFRESH})
+    private Authority authority;
+
+    @OneToOne
+    private Menu menu;
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
+
+    public Authority getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(Authority authority) {
+        this.authority = authority;
+    }
 
     public Long getId() {
         return id;
@@ -56,11 +74,4 @@ public class MenuValue implements Serializable{
         this.modifyDate = modifyDate;
     }
 
-    public String getvName() {
-        return vName;
-    }
-
-    public void setvName(String vName) {
-        this.vName = vName;
-    }
 }

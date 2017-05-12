@@ -2,6 +2,7 @@ package com.zz.model.admin;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by X-man on 2017/5/10.
@@ -22,6 +23,17 @@ public class Authority implements Serializable{
 
     @ManyToOne
     private Role role;
+
+    @OneToOne
+    private MenuValue menuValue;
+
+    public MenuValue getMenuValue() {
+        return menuValue;
+    }
+
+    public void setMenuValue(MenuValue menuValue) {
+        this.menuValue = menuValue;
+    }
 
     public Long getId() {
         return id;
