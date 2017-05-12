@@ -1,7 +1,6 @@
 package com.zz.service.admin.impl;
 
-import cn.shengyuan.tools.util.RSAUtils;
-import cn.shengyuan.yun.admin.system.service.RSAService;
+import com.zz.service.admin.RSAService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,7 @@ public class RSAServiceImpl implements RSAService {
 
 	@Transactional(readOnly = true)
 	public RSAPublicKey generateKey(HttpServletRequest request) {
-		Assert.notNull(request);
+		Assert.notNull(request,"request请求为null");
 		KeyPair keyPair = RSAUtils.generateKeyPair();
 		RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
 		RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
