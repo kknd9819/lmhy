@@ -2,9 +2,14 @@ package com.zz.service.admin.impl;
 
 
 import com.zz.dao.admin.MenuDao;
+import com.zz.dao.admin.RoleDao;
+import com.zz.model.admin.Authority;
 import com.zz.model.admin.Menu;
+import com.zz.model.admin.MenuValue;
+import com.zz.model.admin.Role;
 import com.zz.model.basic.Pageable;
 import com.zz.service.admin.MenuService;
+import com.zz.util.shengyuan.JsonUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -24,6 +29,9 @@ public class MenuServiceImpl implements MenuService {
 	
 	@Resource
 	private MenuDao menuDao;
+
+	@Resource
+	private RoleDao roleDao;
 
 
 	@Override
@@ -66,12 +74,13 @@ public class MenuServiceImpl implements MenuService {
 		List<Menu> children = menuDao.findChildrenMenu(menu.getId());
 		for (Menu child : children) {
 			setValue(child);
-			menuDao.update(child);
+			menuDao.save(child);
 		}
-		Menu source = menuDao.get(menu.getId());
+		Menu source = menuDao.findOne(menu.getId());
 		menu.setCreateDate(source.getCreateDate());
 		menu.setModifyDate(new Date());
-		return menuDao.update(menu);
+		menuDao.save(menu);
+		return 1;
 	}
 	
 	/**
@@ -102,8 +111,15 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	public String generateTree(Long roleId) {
-		List<Menu> menuMenuValues = menuDao.getAllMenuMenuValue();
-		List<Menu> menus = menuDao.findMenuByRoleId(roleId);
+		List<Menu> allMenu = menuDao.getAllMenuMenuValue();
+		Role role = roleDao.findOne(roleId);
+		List<Authority> authorities = role.getAuthorities();
+		List<Menu> menus = new ArrayList<>();
+		for(Authority authority:authorities){
+			MenuValue menuValue = authority.getMenuValue();
+			Menu menu = menuValue.getMenu();
+			menus.add(menu);
+		}
 		Set<Long> hasMenus = new HashSet<Long>();
 		if (menus != null) {
 			for (Menu menu : menus) {
@@ -111,14 +127,14 @@ public class MenuServiceImpl implements MenuService {
 			}
 		}
 		List<Map<String, Object>> jsonList = new ArrayList<Map<String, Object>>();
-		if (menuMenuValues != null) {
-			for (MenuMenuValue menuMenuValue : menuMenuValues) {
+		if (allMenu != null) {
+			for (Menu menu : allMenu) {
 				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("id", menuMenuValue.getId());
-				map.put("name", menuMenuValue.getName());
-				map.put("pId", menuMenuValue.getParent());
-				map.put("authority", menuMenuValue.getvName());
-				if(hasMenus.contains(menuMenuValue.getId())){
+				map.put("id", menu.getId());
+				map.put("name", menu.getName());
+				map.put("pId", menu.getParent());
+				map.put("authority", menu.getMenuValue().getAuthority().getName());
+				if(hasMenus.contains(menu.getId())){
 					map.put("checked", true);
 				}
 				jsonList.add(map);
@@ -129,7 +145,7 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	public String genereateMenuTree(Long parentId) {
-		List<Menu> menus = menuDao.getAll();
+		List<Menu> menus = menuDao.findAll();
 		List<Map<String, Object>> jsonList = new ArrayList<Map<String, Object>>();
 		if (menus != null) {
 			for (Menu menu : menus) {
