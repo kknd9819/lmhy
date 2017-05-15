@@ -1,18 +1,17 @@
 package com.zz.service.admin.impl;
 
-import cn.shengyuan.basic.model.Page;
-import cn.shengyuan.basic.service.impl.BaseServiceImpl;
-import cn.shengyuan.tools.util.StringUtil;
-import cn.shengyuan.yun.admin.system.service.RoleService;
-import cn.shengyuan.yun.admin.web.Pageable;
-import cn.shengyuan.yun.core.admin.dao.RoleAuthorityDao;
-import cn.shengyuan.yun.core.admin.dao.RoleDao;
-import cn.shengyuan.yun.core.admin.entity.Role;
-import cn.shengyuan.yun.core.admin.entity.RoleAuthority;
+
+import com.zz.dao.admin.AuthorityDao;
+import com.zz.dao.admin.RoleDao;
+import com.zz.model.admin.Authority;
+import com.zz.model.admin.Role;
+import com.zz.service.admin.RoleService;
+import com.zz.util.shengyuan.StringUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+
 
 /**
  * 角色服务层实现
@@ -21,36 +20,31 @@ import java.util.*;
  * @version 1.0
  */
 @Service("roleServiceImpl")
-public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements RoleService {
+public class RoleServiceImpl implements RoleService {
 	
-	@Resource(name = "roleAuthorityDaoImpl")
-	private RoleAuthorityDao roleAuthorityDao;
-	
-	@Resource(name = "roleDaoImpl")
+	@Resource
 	private RoleDao roleDao;
-	
-	@Resource(name = "roleDaoImpl")
-	public void setRoleDao(RoleDao roleDao) {
-		super.setDao(roleDao);
-	}
+
+	@Resource
+	private AuthorityDao authorityDao;
 
 	@Override
 	public Long saveRole(Role role, String authorities) {
 		role.setCreateDate(new Date());
 		role.setModifyDate(new Date());
-		Long roleId = roleDao.save(role);
-		List<RoleAuthority> roleAuthoritys = new ArrayList<RoleAuthority>();
+		Role save = roleDao.save(role);
+		List<Authority> authorityList = new ArrayList<Authority>();
 		String[] arrayAuthority = authorities.split(",");
 		for (String authority : arrayAuthority) {
 			if (!StringUtil.isEmpty(authority)) {
-				RoleAuthority roleAuthority = new RoleAuthority();
-				roleAuthority.setRoleId(roleId);
-				roleAuthority.setAuthority(authority);
-				roleAuthoritys.add(roleAuthority);
+				Authority authority1 = new Authority();
+				authority1.setRole(role);
+				authority1.setName(authority);
+				authorityList.add(authority1);
 			}
 		}
-		roleAuthorityDao.batchSaveRoleAuthority(roleAuthoritys);
-		return roleId;
+		authorityDao.save(authorityList);
+		return save.getId();
 	}
 
 	@Override
@@ -75,7 +69,8 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 	public void batchDelete(List<Role> roles) {
 		roleDao.batchDelete(roles);
 	}
-	
+
+
 	@Override
 	public Page<Role> findPage(Pageable pageable) {
 		int pageSize = pageable.getPageSize();
