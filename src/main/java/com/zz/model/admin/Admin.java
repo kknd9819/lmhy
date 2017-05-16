@@ -75,6 +75,8 @@ public class Admin implements Serializable{
     @ManyToMany(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
     private Set<Role> role;
 
+    public Admin(){super();}
+
     public Admin(Long id) {
         super();
         this.id = id;
