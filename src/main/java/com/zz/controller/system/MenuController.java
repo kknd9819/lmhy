@@ -5,6 +5,7 @@ import com.zz.dao.admin.AuthorityDao;
 import com.zz.model.admin.Authority;
 import com.zz.model.admin.Menu;
 import com.zz.model.admin.MenuValue;
+import com.zz.model.basic.Message;
 import com.zz.model.basic.Pageable;
 import com.zz.service.admin.MenuService;
 import com.zz.service.admin.MenuValueService;
@@ -166,18 +167,20 @@ public class MenuController extends BaseController {
 				if (menuValue == null) {
 					return ERROR_VIEW;
 				}
-				if (menuValueService.nameExists(valueId, vName)) {
+				if (menuValueService.nameExists( vName)) {
 					return ERROR_VIEW;
 				}
 				menuValue.setModifyDate(new Date());
-				menuValue.setvName(vName);
-				menuValueService.update(menuValue);
-				menu.setMenuValue(valueId);
+				Authority authority =  authorityDao.findByName(vName);
+				authority.setName(vName);
+				menuValue.setAuthority(authority);
+				MenuValue save = menuValueService.save(menuValue);
+				menu.setMenuValue(save);
 			}
 		}
 		
 		if (m.getParent() != null) {
-			Menu parent = menuService.get(m.getParent());
+			Menu parent = menuService.findOne(m.getParent());
 			if (parent.equals(m)) {
 				return ERROR_VIEW;
 			}
@@ -201,7 +204,7 @@ public class MenuController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public Message delete(Long id, Long vid) {
-		Menu menu = menuService.get(id);
+		Menu menu = menuService.findOne(id);
 		if (menu == null) {
 			return ERROR_MESSAGE;
 		}

@@ -78,4 +78,7 @@ public interface MenuService {
 	public String genereateMenuTree(Long parentId);
 
     Menu findOne(Long parentId);
+
+
+	void delete(Long id);
 }

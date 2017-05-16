@@ -39,4 +39,6 @@ public interface MenuValueService  {
 	 MenuValue save(MenuValue menuValue);
 
 	 MenuValue findOne(Long valueId);
+
+	 void delete(Long vid);
 }

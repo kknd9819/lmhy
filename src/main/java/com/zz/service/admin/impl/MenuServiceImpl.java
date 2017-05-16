@@ -168,4 +168,9 @@ public class MenuServiceImpl implements MenuService {
 	public Menu findOne(Long parentId) {
 		return menuDao.findOne(parentId);
 	}
+
+	@Override
+	public void delete(Long id) {
+		 menuDao.delete(id);
+	}
 }

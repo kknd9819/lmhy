@@ -51,5 +51,10 @@ public class MenuValueServiceImpl implements MenuValueService {
 		return menuValueDao.findOne(valueId);
 	}
 
+	@Override
+	public void delete(Long vid) {
+		menuValueDao.delete(vid);
+	}
+
 
 }
