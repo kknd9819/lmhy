@@ -65,4 +65,12 @@ public interface AdminService {
 	 * @param admins
 	 */
 	void batchDelete(List<Admin> admins);
+
+	/**
+	 * 获取当前管理员
+	 * @return
+	 */
+    Admin getCurrent();
+
+	Admin save(Admin pAdmin);
 }

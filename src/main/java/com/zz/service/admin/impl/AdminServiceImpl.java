@@ -11,6 +11,7 @@ import com.zz.service.admin.AdminService;
 import com.zz.util.shengyuan.StringUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -115,6 +116,17 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public void batchDelete(List<Admin> admins) {
 		adminDao.delete(admins);
+	}
+
+	@Override
+	public Admin getCurrent() {
+		Admin admin = (Admin)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return admin;
+	}
+
+	@Override
+	public Admin save(Admin pAdmin) {
+		return adminDao.save(pAdmin);
 	}
 
 }

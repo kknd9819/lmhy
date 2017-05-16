@@ -117,5 +117,15 @@ public class RoleServiceImpl implements RoleService {
 		Set<Role> roles = roleDao.findByAdmins(admins);
 		return roles;
 	}
-	
+
+	@Override
+	public Role findOne(Long id) {
+		return roleDao.findOne(id);
+	}
+
+	@Override
+	public void batchDelete(List<Role> roles) {
+		roleDao.delete(roles);
+	}
+
 }

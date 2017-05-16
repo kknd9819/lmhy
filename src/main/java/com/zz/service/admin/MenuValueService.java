@@ -41,4 +41,6 @@ public interface MenuValueService  {
 	 MenuValue findOne(Long valueId);
 
 	 void delete(Long vid);
+
+	 List<MenuValue> findAll();
 }

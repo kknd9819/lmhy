@@ -1,12 +1,12 @@
 package com.zz.controller.system;
 
-import cn.shengyuan.basic.model.Message;
-import cn.shengyuan.basic.model.Page;
-import cn.shengyuan.yun.admin.system.service.MenuService;
-import cn.shengyuan.yun.admin.system.service.RoleService;
-import cn.shengyuan.yun.admin.web.Pageable;
-import cn.shengyuan.yun.admin.web.controller.BaseController;
-import cn.shengyuan.yun.core.admin.entity.Role;
+import com.zz.controller.BaseController;
+import com.zz.model.admin.Role;
+import com.zz.model.basic.Message;
+import com.zz.model.basic.Pageable;
+import com.zz.service.admin.MenuService;
+import com.zz.service.admin.RoleService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,8 +36,7 @@ public class RoleController extends BaseController {
 
 	/**
 	 * 分页查询角色管理列表
-	 * @param pageNo
-	 * @param pageSize
+	 * @param pageable
 	 * @param model
 	 * @return String
 	 */
@@ -70,7 +69,7 @@ public class RoleController extends BaseController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(Role role, String authorities, RedirectAttributes redirectAttributes) {
 		
-		role.setIsSystem(false);
+		role.setSystem(false);
 		roleService.saveRole(role, authorities);
 		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
 		return "redirect:list.jhtml";
@@ -86,13 +85,13 @@ public class RoleController extends BaseController {
 	public String edit(Long id, ModelMap model) {
 		
 		model.addAttribute("menus",menuService.generateTree(id));
-		model.addAttribute("role", roleService.get(id));
+		model.addAttribute("role", roleService.findOne(id));
 		return "/system/role/edit";
 	}
 
 	/**
 	 * 修改角色
-	 * @param role
+	 * @param propertyRole
 	 * @param authorities
 	 * @param redirectAttributes
 	 * @return String
@@ -100,8 +99,8 @@ public class RoleController extends BaseController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(Role propertyRole, String authorities, RedirectAttributes redirectAttributes) {
 		
-		Role role = roleService.get(propertyRole.getId());
-		if (role == null || role.getIsSystem()) {
+		Role role = roleService.findOne(propertyRole.getId());
+		if (role == null || role.getSystem()) {
 			return ERROR_VIEW;
 		}
 		role.setCode(propertyRole.getCode());
@@ -123,8 +122,8 @@ public class RoleController extends BaseController {
 		List<Role> roles = new ArrayList<Role>();
 		if (ids != null) {
 			for (Long id : ids) {
-				Role role = roleService.get(id);
-				if (role != null && role.getIsSystem()) {
+				Role role = roleService.findOne(id);
+				if (role != null && role.getSystem()) {
 					return Message.error("{}角色不能被删除", role.getName());
 				}
 				roles.add(role);

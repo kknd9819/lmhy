@@ -1,12 +1,12 @@
 package com.zz.controller.system;
 
-import cn.shengyuan.basic.model.Message;
-import cn.shengyuan.tools.util.StringUtil;
-import cn.shengyuan.yun.admin.system.service.MenuService;
-import cn.shengyuan.yun.admin.system.service.MenuValueService;
-import cn.shengyuan.yun.admin.web.controller.BaseController;
-import cn.shengyuan.yun.core.admin.entity.Menu;
-import cn.shengyuan.yun.core.admin.entity.MenuValue;
+import com.zz.controller.BaseController;
+import com.zz.model.admin.Menu;
+import com.zz.model.admin.MenuValue;
+import com.zz.model.basic.Message;
+import com.zz.service.admin.MenuService;
+import com.zz.service.admin.MenuValueService;
+import com.zz.util.shengyuan.StringUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +46,7 @@ public class MenuValueController extends BaseController {
 		if (StringUtil.isEmpty(vName)) {
 			return false;
 		}
-		return !menuValueService.nameExists(id, vName);
+		return !menuValueService.nameExists( vName);
 	}
 
 	/**
@@ -66,8 +66,8 @@ public class MenuValueController extends BaseController {
 	 * @return String
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(MenuValue menuValue,RedirectAttributes redirectAttributes) {
-		if (menuValueService.nameExists(menuValue.getId(), menuValue.getvName())) {
+	public String save(MenuValue menuValue, RedirectAttributes redirectAttributes) {
+		if (menuValueService.nameExists( menuValue.getvName())) {
 			return ERROR_VIEW;
 		}
 		menuValueService.save(menuValue);
@@ -84,33 +84,32 @@ public class MenuValueController extends BaseController {
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public String edit(Long id, ModelMap model) {
 		
-		model.addAttribute("menuvalue", menuValueService.get(id));
+		model.addAttribute("menuvalue", menuValueService.findOne(id));
 		return "/admin/menu_value/edit";
 	}
 
 	/**
 	 * 编辑保存
-	 * @param MenuValue
+	 * @param menuValue
 	 * @param redirectAttributes
 	 * @return String
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(MenuValue menuValue,RedirectAttributes redirectAttributes) {
-		MenuValue pmenuValue = menuValueService.get(menuValue.getId());
+		MenuValue pmenuValue = menuValueService.findOne(menuValue.getId());
 		if (pmenuValue == null) {
 			return ERROR_VIEW;
 		}
-		if (!menuValueService.nameExists(menuValue.getId(), menuValue.getvName())) {
+		if (!menuValueService.nameExists( menuValue.getvName())) {
 			return ERROR_VIEW;
 		}
-		menuValueService.update(menuValue);
+		menuValueService.save(menuValue);
 		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
 		return "redirect:list.jhtml";
 	}
 
 	/**
 	 * 分页查找菜单权限值列表
-	 * @param pageable
 	 * @param model
 	 * @return String
 	 */
@@ -131,14 +130,14 @@ public class MenuValueController extends BaseController {
 		List<MenuValue> menuValues = new ArrayList<MenuValue>();
 		if (ids != null) {
 			for (Long id : ids) {
-				MenuValue menuValue = menuValueService.get(id);
+				MenuValue menuValue = menuValueService.findOne(id);
 				List<Menu> menus = menuService.findMenuByMenuValueId(id);
 				if (menuValue != null && menus != null && menus.size()>0) {
 					return Message.error("该菜单权限值不能被删除",menuValue.getvName());
 				}
 				menuValues.add(menuValue);
 			}
-			long totalCount = menuValueService.getAll().size();
+			long totalCount = menuValueService.findAll().size();
 			if (ids.length >= totalCount) {
 				return Message.error("请至少保留一个菜单权限值");
 			}

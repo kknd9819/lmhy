@@ -56,5 +56,10 @@ public class MenuValueServiceImpl implements MenuValueService {
 		menuValueDao.delete(vid);
 	}
 
+	@Override
+	public List<MenuValue> findAll() {
+		return menuValueDao.findAll();
+	}
+
 
 }

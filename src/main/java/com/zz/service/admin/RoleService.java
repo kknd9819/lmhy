@@ -49,5 +49,8 @@ public interface RoleService {
 	 Set<Long> findRoleIdsByAdminId(Long adminId);
 
 	 Set<Role> findRoleByAdminId(Long id);
-	
+
+     Role findOne(Long id);
+
+	 void batchDelete(List<Role> roles);
 }
