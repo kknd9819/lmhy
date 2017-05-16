@@ -5,6 +5,7 @@ import com.zz.model.admin.Role;
 import org.springframework.data.domain.Page;
 import com.zz.model.basic.Pageable;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -29,6 +30,8 @@ public interface RoleService {
 	 */
 	 void updateRole(Role role, String authorities);
 
+
+	 List<Role> findAll();
 
 	
 	/**

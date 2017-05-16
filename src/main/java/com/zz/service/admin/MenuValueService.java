@@ -35,4 +35,8 @@ public interface MenuValueService  {
 	 * @param menuValues
 	 */
 	 void batchDelete(List<MenuValue> menuValues);
+
+	 MenuValue save(MenuValue menuValue);
+
+	 MenuValue findOne(Long valueId);
 }

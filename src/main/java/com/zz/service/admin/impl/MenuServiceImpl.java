@@ -163,4 +163,9 @@ public class MenuServiceImpl implements MenuService {
 		}
 		return JsonUtils.toJson(jsonList);
 	}
+
+	@Override
+	public Menu findOne(Long parentId) {
+		return menuDao.findOne(parentId);
+	}
 }

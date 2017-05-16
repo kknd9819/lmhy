@@ -39,14 +39,14 @@ public interface AdminService {
 	 * @param roleId 角色主键数组
 	 * @return Long 保存实体的主键
 	 */
-	 Long saveAdmin(Admin admin, Long roleId);
+	 Long saveAdmin(Admin admin, Long[] roleId);
 
 	/**
 	 * 新增后台管理员
 	 * @param admin 后台管理员实体
 	 * @param roleId 角色主键数组
 	 */
-	 void updateAdmin(Admin admin, Long roleId);
+	 void updateAdmin(Admin admin, Long[] roleId);
 
 	
 	/**
@@ -55,4 +55,14 @@ public interface AdminService {
 	 * @return Page<Admin>
 	 */
 	 Page<Admin> findPage(Pageable pageable);
+
+	 Admin findOne(Long id);
+
+	 List<Admin> findAll();
+
+	/**
+	 * 批量删除admin
+	 * @param admins
+	 */
+	void batchDelete(List<Admin> admins);
 }

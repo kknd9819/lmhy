@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 后台管理员服务层实现
@@ -54,7 +51,7 @@ public class AdminServiceImpl implements AdminService {
 	public List<String> findAuthorities(Long id) {
 		Admin admin  = adminDao.findOne(id);
 		List<String> authorities = new ArrayList<String>();
-		List<Role> roles = admin.getRole();
+		Set<Role> roles = admin.getRole();
 		for(Role role : roles){
 			List<Authority> authorities1 = role.getAuthorities();
 			for(Authority authority : authorities1){
@@ -67,25 +64,21 @@ public class AdminServiceImpl implements AdminService {
 
 
 	@Override
-	public Long saveAdmin(Admin admin, Long roleId) {
+	public Long saveAdmin(Admin admin, Long[] roleId) {
 		admin.setCreateDate(new Date());
 		admin.setModifyDate(new Date());
-		Role role = roleDao.findOne(roleId);
-		List<Role> list = new ArrayList<>(1);
-		list.add(role);
-		admin.setRole(list);
+		Set<Role> roles = roleDao.findRoles(roleId);
+		admin.setRole(roles);
 		Admin save = adminDao.save(admin);
 		return save.getId();
 	}
 
 	@Override
-	public void updateAdmin(Admin admin, Long roleId) {
+	public void updateAdmin(Admin admin, Long[] roleId) {
 		admin.setModifyDate(new Date());
-		Role role = roleDao.findOne(roleId);
-		List<Role> list = new ArrayList<>(1);
-		list.add(role);
-		if(role != null){
-			admin.setRole(list);
+		Set<Role> roles  = roleDao.findRoles(roleId);
+		if(roles != null){
+			admin.setRole(roles);
 		}
 		adminDao.saveAndFlush(admin);
 
@@ -107,6 +100,21 @@ public class AdminServiceImpl implements AdminService {
 			return null;
 		}, pageRequest);
 
+	}
+
+	@Override
+	public Admin findOne(Long id) {
+		return adminDao.findOne(id);
+	}
+
+	@Override
+	public List<Admin> findAll() {
+		return adminDao.findAll();
+	}
+
+	@Override
+	public void batchDelete(List<Admin> admins) {
+		adminDao.delete(admins);
 	}
 
 }

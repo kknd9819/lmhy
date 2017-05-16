@@ -76,4 +76,6 @@ public interface MenuService {
 	 * @return String
 	 */
 	public String genereateMenuTree(Long parentId);
+
+    Menu findOne(Long parentId);
 }

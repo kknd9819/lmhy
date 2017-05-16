@@ -41,5 +41,15 @@ public class MenuValueServiceImpl implements MenuValueService {
 		menuValueDao.delete(menuValues);
 	}
 
-	
+	@Override
+	public MenuValue save(MenuValue menuValue) {
+		 return menuValueDao.save(menuValue);
+	}
+
+	@Override
+	public MenuValue findOne(Long valueId) {
+		return menuValueDao.findOne(valueId);
+	}
+
+
 }

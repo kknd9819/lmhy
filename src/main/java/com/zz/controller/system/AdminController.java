@@ -1,13 +1,14 @@
 package com.zz.controller.system;
 
-import cn.shengyuan.yun.admin.system.service.AdminService;
-import cn.shengyuan.yun.admin.system.service.RoleService;
 import com.zz.controller.BaseController;
 import com.zz.model.admin.Admin;
-import com.zz.model.basic.Page;
+import com.zz.model.basic.Message;
 import com.zz.model.basic.Pageable;
+import com.zz.service.admin.AdminService;
+import com.zz.service.admin.RoleService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,7 +75,7 @@ public class AdminController extends BaseController {
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String add(ModelMap model) {
-		model.addAttribute("roles", roleService.getAll());
+		model.addAttribute("roles", roleService.findAll());
 		return "/system/admin/add";
 	}
 
@@ -91,7 +92,7 @@ public class AdminController extends BaseController {
 			return ERROR_VIEW;
 		}
 		admin.setPassword(DigestUtils.md5Hex(admin.getPassword()));
-		admin.setIsLocked(false);
+		admin.setLocked(false);
 		admin.setLoginFailureCount(0);
 		admin.setLockedDate(null);
 		admin.setLoginDate(null);
@@ -109,15 +110,15 @@ public class AdminController extends BaseController {
 	 */
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public String edit(Long id, ModelMap model) {
-		model.addAttribute("roles", roleService.getAll());
-		model.addAttribute("hasRoleIds", roleService.getRoleIdsByAdminId(id));
-		model.addAttribute("admin", adminService.get(id));
+		model.addAttribute("roles", roleService.findAll());
+		model.addAttribute("hasRoleIds", roleService.findRoleIdsByAdminId(id));
+		model.addAttribute("admin", adminService.findOne(id));
 		return "/system/admin/edit";
 	}
 
 	/**
 	 * 修改管理员
-	 * @param admin
+	 * @param propertyAdmin
 	 * @param roleIds
 	 * @param redirectAttributes
 	 * @return
@@ -125,7 +126,7 @@ public class AdminController extends BaseController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(Admin propertyAdmin, Long[] roleIds, RedirectAttributes redirectAttributes) {
 		
-		Admin admin = adminService.get(propertyAdmin.getId());
+		Admin admin = adminService.findOne(propertyAdmin.getId());
 		if (admin == null) {
 			return ERROR_VIEW;
 		}
@@ -133,9 +134,9 @@ public class AdminController extends BaseController {
 			admin.setPassword(DigestUtils.md5Hex(propertyAdmin.getPassword()));
 		}
 		admin.setName(propertyAdmin.getName());
-		admin.setIsEnabled(propertyAdmin.getIsEnabled());
-		if(null!=propertyAdmin.getIsLocked())
-			admin.setIsLocked(propertyAdmin.getIsLocked());
+		admin.setEnabled(propertyAdmin.getEnabled());
+		if(null!=propertyAdmin.getLocked())
+			admin.setLocked(propertyAdmin.getLocked());
 		admin.setEmail(propertyAdmin.getEmail());
 		adminService.updateAdmin(admin, roleIds);
 		addFlashMessage(redirectAttributes, SUCCESS_MESSAGE);
@@ -150,7 +151,7 @@ public class AdminController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public Message delete(Long[] ids) {
-		if (ids.length >= adminService.getAll().size()) {
+		if (ids.length >= adminService.findAll().size()) {
 			return Message.error("请至少保留一个管理员！");
 		}
 		List<Admin> admins = new ArrayList<Admin>();

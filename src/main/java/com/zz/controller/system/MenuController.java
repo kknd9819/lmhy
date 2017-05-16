@@ -1,14 +1,14 @@
 package com.zz.controller.system;
 
-import cn.shengyuan.basic.model.Message;
-import cn.shengyuan.tools.util.StringUtil;
-import cn.shengyuan.yun.admin.system.service.MenuService;
-import cn.shengyuan.yun.admin.system.service.MenuValueService;
-import cn.shengyuan.yun.admin.web.Pageable;
-import cn.shengyuan.yun.admin.web.controller.BaseController;
-import cn.shengyuan.yun.core.admin.entity.Menu;
-import cn.shengyuan.yun.core.admin.entity.MenuValue;
-import cn.shengyuan.yun.core.admin.vo.MenuMenuValue;
+import com.zz.controller.BaseController;
+import com.zz.dao.admin.AuthorityDao;
+import com.zz.model.admin.Authority;
+import com.zz.model.admin.Menu;
+import com.zz.model.admin.MenuValue;
+import com.zz.model.basic.Pageable;
+import com.zz.service.admin.MenuService;
+import com.zz.service.admin.MenuValueService;
+import com.zz.util.shengyuan.StringUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +37,9 @@ public class MenuController extends BaseController {
 	
 	@Resource(name = "menuValueServiceImpl")
 	private MenuValueService menuValueService;
+
+	@Resource
+	private AuthorityDao authorityDao;
 	
 	/**
 	 * 分页查询菜单列表
@@ -61,7 +64,7 @@ public class MenuController extends BaseController {
 	public Map<String, Object> zllist(Long id) {
 		
 		Map<String, Object> data = new HashMap<String, Object>();
-		List<MenuMenuValue> menus = menuService.findChildren(id);
+		List<Menu> menus = menuService.findChildren(id);
 		data.put("message", SUCCESS_MESSAGE);
 		data.put("menus", menus);
 		return data;
@@ -91,17 +94,19 @@ public class MenuController extends BaseController {
 		menu.setParent(parentId);
 		MenuValue menuValue = new MenuValue();
 		if(!StringUtil.isEmpty(vName)){
-			if (menuValueService.nameExists(menu.getMenuValue(), vName)) {
+			if (menuValueService.nameExists(vName)) {
 				return ERROR_VIEW;
 			}
 			menuValue.setCreateDate(new Date());
 			menuValue.setModifyDate(new Date());
-			menuValue.setvName(vName);
-			Long menuValueId = menuValueService.save(menuValue);
-			menu.setMenuValue(menuValueId);
+			Authority authority =  authorityDao.findByName(vName);
+			authority.setName(vName);
+			menuValue.setAuthority(authority);
+			MenuValue save = menuValueService.save(menuValue);
+			menu.setMenuValue(save);
 		}
 		if(parentId != null){
-			Menu parentMenu = menuService.get(parentId);
+			Menu parentMenu = menuService.findOne(parentId);
 			menu.setFullName(parentMenu.getFullName() + menu.getName());
 			menu.setGrade(parentMenu.getGrade()+1);
 		}else{
@@ -122,10 +127,10 @@ public class MenuController extends BaseController {
 	 */
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public String edit(Long id, ModelMap model, Pageable pageable) {
-		Menu menu = menuService.get(id);
+		Menu menu = menuService.findOne(id);
 		model.addAttribute("menuTree", menuService.genereateMenuTree(menu.getParent()));
 		model.addAttribute("menu", menu);
-		model.addAttribute("menuValue", menuValueService.get(menu.getMenuValue()));
+		model.addAttribute("menuValue", menu.getMenuValue());
 		return "/system/menu/edit";
 	}
 
@@ -133,29 +138,31 @@ public class MenuController extends BaseController {
 	 * 更新菜单
 	 * @param menu
 	 * @param vName
-	 * @param ValueId
+	 * @param valueId
 	 * @param parentId
 	 * @param redirectAttributes
 	 * @return String
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public String update(Menu menu, String vName, Long valueId, Long parentId, RedirectAttributes redirectAttributes) {
-		Menu m = menuService.get(menu.getId());
+		Menu m = menuService.findOne(menu.getId());
 		m.setParent(parentId);
 		
 		if (!StringUtil.isEmpty(vName)) {
 			if(valueId == null){
 				MenuValue pmenuValue = new MenuValue();
-				if (menuValueService.nameExists(valueId, vName)) {
+				if (menuValueService.nameExists( vName)) {
 					return ERROR_VIEW;
 				}
 				pmenuValue.setCreateDate(new Date());
 				pmenuValue.setModifyDate(new Date());
-				pmenuValue.setvName(vName);
-				Long menuValueId = menuValueService.save(pmenuValue);
-				menu.setMenuValue(menuValueId);
+				Authority authority =  authorityDao.findByName(vName);
+				authority.setName(vName);
+				pmenuValue.setAuthority(authority);
+				MenuValue save = menuValueService.save(pmenuValue);
+				menu.setMenuValue(save);
 			}else{
-				MenuValue menuValue = menuValueService.get(valueId);
+				MenuValue menuValue = menuValueService.findOne(valueId);
 				if (menuValue == null) {
 					return ERROR_VIEW;
 				}
