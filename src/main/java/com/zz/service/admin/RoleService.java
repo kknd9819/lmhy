@@ -3,9 +3,8 @@ package com.zz.service.admin;
 
 import com.zz.model.admin.Role;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.zz.model.basic.Pageable;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,35 +20,31 @@ public interface RoleService {
 	 * @param authorities 权限值数组
 	 * @return Long 保存实体的主键
 	 */
-	public Long saveRole(Role role, String authorities);
+	 Long saveRole(Role role, String authorities);
 	
 	/**
 	 * 新增角色
 	 * @param role 角色
 	 * @param authorities 权限值数组
 	 */
-	public void updateRole(Role role, String authorities);
+	 void updateRole(Role role, String authorities);
 
-	/**
-	 * 批量删除角色
-	 * @param roles
-	 */
-	public void batchDelete(List<Role> roles);
+
 	
 	/**
 	 * 分页查找所有的角色
 	 * @param pageable
 	 * @return Page<Role>
 	 */
-	public Page<Role> findPage(Pageable pageable);
+	 Page<Role> findPage(Pageable pageable);
 	
 	/**
 	 * 根据管理员ID查询管理员的角色ID
 	 * @param adminId
 	 * @return Set<Long>
 	 */
-	public Set<Long> getRoleIdsByAdminId(Long adminId);
+	 Set<Long> findRoleIdsByAdminId(Long adminId);
 
-	public List<Role> findRoleByAdminId(Long id);
+	 Set<Role> findRoleByAdminId(Long id);
 	
 }

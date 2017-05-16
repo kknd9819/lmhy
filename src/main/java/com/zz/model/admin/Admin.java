@@ -5,6 +5,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by X-man on 2017/5/10.
@@ -72,7 +73,7 @@ public class Admin implements Serializable{
     private String loginIp;
 
     @ManyToMany(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
-    private List<Role> role;
+    private Set<Role> role;
 
     public Long getId() {
         return id;
@@ -186,11 +187,11 @@ public class Admin implements Serializable{
         this.loginIp = loginIp;
     }
 
-    public List<Role> getRole() {
+    public Set<Role> getRole() {
         return role;
     }
 
-    public void setRole(List<Role> role) {
+    public void setRole(Set<Role> role) {
         this.role = role;
     }
 }

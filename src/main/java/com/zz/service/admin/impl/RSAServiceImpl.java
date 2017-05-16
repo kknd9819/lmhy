@@ -27,7 +27,7 @@ public class RSAServiceImpl implements RSAService {
 
 	@Transactional(readOnly = true)
 	public RSAPublicKey generateKey(HttpServletRequest request) {
-		Assert.notNull(request,"request请求为null");
+		Assert.notNull(request,"request不能为null");
 		KeyPair keyPair = RSAUtils.generateKeyPair();
 		RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
 		RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
@@ -38,14 +38,14 @@ public class RSAServiceImpl implements RSAService {
 
 	@Transactional(readOnly = true)
 	public void removePrivateKey(HttpServletRequest request) {
-		Assert.notNull(request);
+		Assert.notNull(request,"request不能为null");
 		HttpSession session = request.getSession();
 		session.removeAttribute(PRIVATE_KEY_ATTRIBUTE_NAME);
 	}
 
 	@Transactional(readOnly = true)
 	public String decryptParameter(String name, HttpServletRequest request) {
-		Assert.notNull(request);
+		Assert.notNull(request,"request不能为null");
 		if (name != null) {
 			HttpSession session = request.getSession();
 			RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute(PRIVATE_KEY_ATTRIBUTE_NAME);
