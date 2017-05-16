@@ -35,13 +35,13 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	public boolean usernameExists(String username) {
-		List<Admin> list = adminDao.findByUsername(username);
+		List<Admin> list = adminDao.findAdminListByUsername(username);
 		return list != null && list.size() > 0;
 	}
 
 	@Override
 	public Admin findByUsername(String username) {
-		List<Admin> list = adminDao.findByUsername(username);
+		List<Admin> list = adminDao.findAdminListByUsername(username);
 		if (list == null || list.size() == 0) {
 			return null;
 		}

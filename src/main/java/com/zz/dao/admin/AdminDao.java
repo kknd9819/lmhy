@@ -25,7 +25,9 @@ public interface AdminDao extends JpaRepository<Admin, Long>,JpaSpecificationExe
 	 * @return List<Admin>
 	 */
 	 @Query(value = "select a from Admin a where a.username = ?1")
-	 List<Admin> findByUsername( String username);
+	 List<Admin> findAdminListByUsername( String username);
+
+	 Admin findByUsername(String username);
 
 
 

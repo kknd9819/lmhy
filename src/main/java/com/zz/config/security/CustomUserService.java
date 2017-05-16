@@ -1,29 +1,30 @@
-package com.zz.service;
+package com.zz.config.security;
 
-import com.zz.model.SysUser;
-import com.zz.dao.SysUserRepository;
+import com.zz.dao.admin.AdminDao;
+import com.zz.model.admin.Admin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 
 
-@Service
+@Component
 public class CustomUserService implements UserDetailsService{
 
     @Autowired
-    private SysUserRepository userRepository;
+    private AdminDao adminDao;
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SysUser user = userRepository.findByUsername(username);
-        if(user == null){
+        Admin admin = adminDao.findByUsername(username);
+        if(admin == null){
             throw new UsernameNotFoundException("用户名不存在");
         }
-        return user;
+
+        return new SecurityUser(admin);
     }
 
 
