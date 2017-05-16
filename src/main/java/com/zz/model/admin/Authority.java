@@ -2,7 +2,6 @@ package com.zz.model.admin;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by X-man on 2017/5/10.
@@ -21,7 +20,6 @@ public class Authority implements Serializable{
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne
     private Role role;
 
     @OneToOne

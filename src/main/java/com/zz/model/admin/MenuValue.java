@@ -33,11 +33,15 @@ public class MenuValue implements Serializable{
 
     private String vName;
 
-    @OneToOne
+    @OneToOne(mappedBy = "menuValue")
     private Menu menu;
 
     public String getvName() {
-        return authority.getName();
+        return this.authority.getName();
+    }
+
+    public void setvName(String vName) {
+        this.vName = vName;
     }
 
     public Menu getMenu() {
